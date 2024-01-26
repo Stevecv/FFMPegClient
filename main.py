@@ -22,13 +22,3 @@ def main_menu():
 
 
 main_menu()
-
-
-#@app.route("/play-video")
-#def hello_world():
-#    video = request.args.get("video")
-#    print("Recieved request for video " + video)
-#    return "Play video " + video
-#
-#
-#serve(app, host='0.0.0.0', port=5000, threads=1)

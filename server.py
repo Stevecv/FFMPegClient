@@ -11,6 +11,23 @@ from Utils import print_out
 app = Flask(__name__)
 
 
+video_port = 5000
+audio_port = 5000
+
+def is_port_open(port):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    result = sock.connect_ex(('127.0.0.1',port))
+    sock.close()
+    return result == 0
+
+
+def get_next_open_port(port_start):
+    test_port = port_start
+    while not is_port_open(test_port):
+        test_port += 1
+    return test_port
+
+
 def get_ip_address():
     try:
         # This will return the primary IP address associated with the machine
@@ -39,7 +56,7 @@ def play_video():
     print_out("Playing video for " + request.remote_addr)
     video = request.args.get("video-name")
     ip_address = request.args.get("ip-address")
-    subprocess.call("ffmpeg -re -i \"videos\\" + video + "\" -map 0:v -c:v libx264 -preset ultrafast -tune zerolatency -b:v 1500k -f rtp rtp://" + ip_address + ":5004 -map 0:a -c:a libopus -b:a 128k -f rtp rtp://" + ip_address + ":5006", shell=True)
+    subprocess.call("ffmpeg -re -i \"videos\\" + video + "\" -map 0:v -c:v libx264 -preset ultrafast -tune zerolatency -b:v 1500k -f rtp rtp://" + ip_address + ":" + str(video_port) + " -map 0:a -c:a libopus -b:a 128k -f rtp rtp://" + ip_address + ":" + str(audio_port) + "", shell=True)
 
     return "Playing video..."
 
@@ -52,13 +69,19 @@ def get_sdp():
     print_out("Sending sdp to " + request.remote_addr)
 
     sdp_file = "server-temp\\" + str(uuid.uuid4())
-    subprocess.call("ffmpeg -re -i \"videos\\" + video + "\" -map 0:v -c:v libx264 -preset ultrafast -tune zerolatency -b:v 1500k -f rtp rtp://" + ip_address + ":5004 -map 0:a -c:a libopus -b:a 128k -f rtp rtp://" + ip_address + ":5006 -sdp_file " + sdp_file + ".sdp 2> " + sdp_file + ".txt", shell=True)
+    subprocess.call("ffmpeg -re -i \"videos\\" + video + "\" -map 0:v -c:v libx264 -preset ultrafast -tune zerolatency -b:v 1500k -f rtp rtp://" + ip_address + ":" + str(video_port) + " -map 0:a -c:a libopus -b:a 128k -f rtp rtp://" + ip_address + ":" + str(audio_port) + " -sdp_file " + sdp_file + ".sdp 2> " + sdp_file + ".txt", shell=True)
 
     f = open(sdp_file + ".sdp", "r")
     return f.read()
 
 
 def setup_server(port):
+    global video_port
+    global audio_port
+
     print("Running server on " + get_ip_address())
+
+    video_port = get_next_open_port(5000)
+    audio_port = get_next_open_port(5000)
 
     serve(app, host='0.0.0.0', port=port, threads=1)
