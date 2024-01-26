@@ -10,6 +10,7 @@ def video_chose_menu():
 
 
 def setup_client():
+    global server_ip
     print("""What is the servers ip?
 
 -----------------------------------""")
