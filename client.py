@@ -18,7 +18,7 @@ def get_ip_address():
 
 def play_video(sdp_loc, port, video):
     print("Playing video")
-    subprocess.call("ffplay -protocol_whitelist file,rtp,udp -i " + sdp_loc, shell=True)
+    subprocess.call("ffplay -protocol_whitelist file,rtp,udp " + sdp_loc, shell=True)
     requests.get("http://" + server_ip + ":" + str(port) + "/play-video?video-name=" + video + "&ip-address=" + get_ip_address())
 
 
