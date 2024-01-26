@@ -13,7 +13,7 @@ def video_chose_menu(port):
 
     i = 0
     for video in video_list:
-        print(i + ". " + video_list[i])
+        print(str(i) + ". " + video_list[i])
 
         i += 1
 
