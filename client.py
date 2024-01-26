@@ -37,6 +37,7 @@ def get_sdp(video, port):
 
     # Wait for sdp to be valid
     while len(sdp_file_readable.read()) < 2:
+        print(sdp_file_readable.read() + " / " + len(sdp_file_readable.read()))
         time.sleep(0.5)
 
     play_video(sdp_loc, port, video)
