@@ -41,7 +41,7 @@ def get_sdp():
 
     print_out("Sending sdp to " + request.remote_addr)
 
-    sdp_file = "temp\\" + str(uuid.uuid4())
+    sdp_file = "server-temp\\" + str(uuid.uuid4())
     subprocess.call("ffmpeg -re -i \"videos\\" + video + "\" -map 0:v -c:v libx264 -preset ultrafast -tune zerolatency -b:v 1500k -f rtp rtp://" + ip_address + ":5004 -map 0:a -c:a libopus -b:a 128k -f rtp rtp://" + ip_address + ":5006 -sdp_file " + sdp_file + ".sdp 2> " + sdp_file + ".txt", shell=True)
 
     f = open(sdp_file + ".sdp", "r")
