@@ -10,20 +10,8 @@ from Utils import print_out
 
 app = Flask(__name__)
 
-video_port = 5000
-audio_port = 5000
-
-
-def is_port_open(port):
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        return s.connect_ex(('localhost', port)) == 0
-
-
-def get_next_open_port(port_start):
-    test_port = port_start
-    while not is_port_open(test_port):
-        test_port += 1
-    return test_port
+video_port = 5008
+audio_port = 5010
 
 
 def get_ip_address():
@@ -84,9 +72,6 @@ def setup_server(port):
     global audio_port
 
     print("Running server on " + get_ip_address())
-
-    video_port = get_next_open_port(5000)
-    audio_port = get_next_open_port(5000)
 
     print("Using video port: " + str(video_port))
     print("Using audio port: " + str(audio_port))
