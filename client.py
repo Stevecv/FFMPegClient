@@ -32,13 +32,7 @@ def get_sdp(video, port):
 
     sdp_loc = "client-temp\\" + video + ".sdp"
     sdp_file = open(sdp_loc, "w")
-    sdp_file_readable = open(sdp_loc, "r")
     sdp_file.write(sdp_str)
-
-    # Wait for sdp to be valid
-    while len(sdp_file_readable.read()) < 2:
-        print(sdp_file_readable.read() + " / " + str(len(sdp_file_readable.read())))
-        time.sleep(0.5)
 
     play_video(sdp_loc, port, video)
 
