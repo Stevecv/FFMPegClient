@@ -44,11 +44,11 @@ def get_sdp():
     sdp_file = "temp\\" + str(uuid.uuid4())
     subprocess.call("ffmpeg -re -i \"videos\\" + video + "\" -map 0:v -c:v libx264 -preset ultrafast -tune zerolatency -b:v 1500k -f rtp rtp://" + ip_address + ":5004 -map 0:a -c:a libopus -b:a 128k -f rtp rtp://" + ip_address + ":5006 -sdp_file " + sdp_file + ".sdp 2> " + sdp_file + ".txt", shell=True)
 
-    f = open(sdp_file, "r")
+    f = open(sdp_file + ".sdp", "r")
     return f.read()
 
 
-def setup_server():
+def setup_server(port):
     print("Running server on " + get_ip_address())
 
-    serve(app, host='0.0.0.0', port=5001, threads=1)
+    serve(app, host='0.0.0.0', port=port, threads=1)
