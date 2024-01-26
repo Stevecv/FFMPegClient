@@ -24,6 +24,7 @@ def play_video(sdp_loc, port, video):
 
 def get_sdp(video, port):
     print("Loading video, please wait...")
+    print(server_ip)
     sdp_str = requests.get("http://" + server_ip + ":" + str(port) + "/get-sdp?video-name=" + video + "&ip-address=" +
                            server_ip).text
 
