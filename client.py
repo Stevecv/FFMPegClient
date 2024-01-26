@@ -1,5 +1,6 @@
 import socket
 import subprocess
+from datetime import time
 
 import requests
 
@@ -18,8 +19,9 @@ def get_ip_address():
 
 def play_video(sdp_loc, port, video):
     print("Playing video")
-    subprocess.call("ffplay -protocol_whitelist file,rtp,udp " + sdp_loc, shell=True)
     requests.get("http://" + server_ip + ":" + str(port) + "/play-video?video-name=" + video + "&ip-address=" + get_ip_address())
+    subprocess.call("ffplay -protocol_whitelist file,rtp,udp " + sdp_loc, shell=True)
+
 
 
 def get_sdp(video, port):
@@ -31,6 +33,10 @@ def get_sdp(video, port):
     sdp_loc = "client-temp\\" + video + ".sdp"
     sdp_file = open(sdp_loc, "w")
     sdp_file.write(sdp_str)
+
+    # Wait for sdp to be valid
+    while len(sdp_file.read()) < 2:
+        time.sleep(0.5)
     play_video(sdp_loc, port, video)
 
 
