@@ -5,6 +5,7 @@ server_ip = ""
 
 def get_sdp(video, port):
     sdp_str = requests.get("http://" + server_ip + ":" + port + "/get-sdp?video-name=" + video + "&ip-address=" + server_ip).text
+    print(sdp_str)
 
 
 def video_chose_menu(port):
