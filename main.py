@@ -1,7 +1,3 @@
-from flask import Flask
-from waitress import serve
-from flask import request
-
 from client import setup_client
 from server import setup_server
 
