@@ -5,8 +5,6 @@ from flask import request
 from client import setup_client
 from server import setup_server
 
-app = Flask(__name__)
-
 
 def main_menu():
     print("""What is this computer working as
