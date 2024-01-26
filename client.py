@@ -1,6 +1,6 @@
 import socket
 import subprocess
-from datetime import time
+import time
 
 import requests
 
@@ -38,6 +38,7 @@ def get_sdp(video, port):
     # Wait for sdp to be valid
     while len(sdp_file_readable.read()) < 2:
         time.sleep(0.5)
+
     play_video(sdp_loc, port, video)
 
 
