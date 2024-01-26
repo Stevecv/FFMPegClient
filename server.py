@@ -1,5 +1,7 @@
 import os
 import socket
+import subprocess
+import uuid
 
 from flask import Flask, request
 from waitress import serve
@@ -32,7 +34,21 @@ def get_video_list():
     return ",".join(video_list)
 
 
+@app.route("/get-sdp")
+def get_sdp():
+    video = request.args.get("video-name")
+    ip_address = request.args.get("ip-address")
+
+    print_out("Sending sdp to " + request.remote_addr)
+
+    sdp_file = "temp\\" + str(uuid.uuid4())
+    subprocess.call("ffmpeg -re -i \"videos\\" + video + "\" -map 0:v -c:v libx264 -preset ultrafast -tune zerolatency -b:v 1500k -f rtp rtp://" + ip_address + ":5004 -map 0:a -c:a libopus -b:a 128k -f rtp rtp://" + ip_address + ":5006 -sdp_file " + sdp_file + ".sdp 2> " + sdp_file + ".txt", shell=True)
+
+    f = open(sdp_file, "r")
+    return f.read()
+
+
 def setup_server():
     print("Running server on " + get_ip_address())
 
-    serve(app, host='0.0.0.0', port=5000, threads=1)
+    serve(app, host='0.0.0.0', port=5001, threads=1)
