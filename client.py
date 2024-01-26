@@ -1,24 +1,36 @@
+import socket
 import subprocess
 
 import requests
 
 server_ip = ""
 
+def get_ip_address():
+    try:
+        # This will return the primary IP address associated with the machine
+        host_name = socket.gethostname()
+        ip_address = socket.gethostbyname(host_name)
+        return ip_address
+    except socket.error as e:
+        print(f"Error: {e}")
+        return None
 
-def play_video(sdp_loc):
+
+def play_video(sdp_loc, port, video):
     print("Playing video")
     subprocess.call("ffplay -protocol_whitelist file,rtp,udp -i " + sdp_loc, shell=True)
-    print("Played video")
+    requests.get("http://" + server_ip + ":" + str(port) + "/play-video?video-name=" + video + "&ip-address=" + get_ip_address())
 
 
 def get_sdp(video, port):
     print("Loading video, please wait...")
-    sdp_str = requests.get("http://" + server_ip + ":" + str(port) + "/get-sdp?video-name=" + video + "&ip-address=" + server_ip).text
+    sdp_str = requests.get("http://" + server_ip + ":" + str(port) + "/get-sdp?video-name=" + video + "&ip-address=" +
+                           get_ip_address()).text
 
     sdp_loc = "client-temp\\" + video + ".sdp"
     sdp_file = open(sdp_loc, "w")
     sdp_file.write(sdp_str)
-    play_video(sdp_loc)
+    play_video(sdp_loc, port)
 
 
 def video_chose_menu(port):

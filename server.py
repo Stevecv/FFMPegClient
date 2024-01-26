@@ -34,6 +34,16 @@ def get_video_list():
     return ",".join(video_list)
 
 
+@app.route("/play-video")
+def play_video():
+    print_out("Playing video for " + request.remote_addr)
+    video = request.args.get("video-name")
+    ip_address = request.args.get("ip-address")
+    subprocess.call("ffmpeg -re -i \"videos\\" + video + "\" -map 0:v -c:v libx264 -preset ultrafast -tune zerolatency -b:v 1500k -f rtp rtp://" + ip_address + ":5004 -map 0:a -c:a libopus -b:a 128k -f rtp rtp://" + ip_address + ":5006", shell=True)
+
+    return "Playing video..."
+
+
 @app.route("/get-sdp")
 def get_sdp():
     video = request.args.get("video-name")
