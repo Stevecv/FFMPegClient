@@ -33,6 +33,7 @@ def get_sdp(video, port):
     sdp_loc = "client-temp\\" + video + ".sdp"
     sdp_file = open(sdp_loc, "w")
     sdp_file.write(sdp_str)
+    sdp_file.close()
 
     play_video(sdp_loc, port, video)
 
