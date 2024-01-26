@@ -9,7 +9,7 @@ def get_sdp(video, port):
 
 
 def video_chose_menu(port):
-    video_list = requests.get("http://" + server_ip + ":" + port + "/get-videos").text.split(",")
+    video_list = requests.get("http://" + server_ip + ":" + str(port) + "/get-videos").text.split(",")
 
     i = 0
     for video in video_list:
