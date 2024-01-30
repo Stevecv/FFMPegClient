@@ -4,6 +4,8 @@ import time
 
 import requests
 
+import Utils
+
 server_ip = ""
 
 def get_ip_address():
@@ -38,7 +40,14 @@ def get_sdp(video, port):
 
 
 def video_chose_menu(port):
-    video_list = requests.get("http://" + server_ip + ":" + str(port) + "/get-videos").text.split(",")
+    try:
+        video_list = requests.get("http://" + server_ip + ":" + str(port) + "/get-videos").text.split(",")
+    except requests.exceptions.ConnectionError:
+        Utils.print_err("A connection to " + server_ip + ":" + str(port) + " could not be created, is it correct?")
+        return
+
+    if check_error(video_list):
+        return
 
     i = 1
     for video in video_list:
@@ -49,7 +58,7 @@ def video_chose_menu(port):
     print("Enter a video name (with file extension)")
     print("-----------------------------------")
     video = input("> ")
-    get_sdp(video, port)
+    get_sdp(video.lower(), port)
 
 
 def setup_client(port):
@@ -62,3 +71,8 @@ def setup_client(port):
     video_chose_menu(port)
 
 
+def check_error(str):
+    if "Internal Server Error" in str:
+        Utils.print_error("A connection could not be created. Please try again.")
+
+    return "Internal Server Error" in str

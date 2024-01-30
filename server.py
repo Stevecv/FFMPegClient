@@ -1,7 +1,6 @@
 import os
 import socket
 import subprocess
-import uuid
 
 from flask import Flask, request
 from waitress import serve
@@ -27,8 +26,6 @@ def get_ip_address():
 
 @app.route("/get-videos")
 def get_video_list():
-    # video = request.args.get("video")
-
     print_out("Sending video list to " + request.remote_addr)
     video_list = []
     for video in os.listdir("./videos"):
@@ -78,5 +75,5 @@ def setup_server(port):
     print("Using video port: " + str(video_port))
     print("Using audio port: " + str(audio_port))
 
-    print(port)
     serve(app, host='0.0.0.0', port=port, threads=1)
+    print("Serving")
