@@ -47,12 +47,13 @@ def play_video():
     w = vid.w
     h = vid.h
 
-    if h > 1080:
-        w = round(w/(h/request.args.get("resolution")))
-        h = 1080
+    max_res = int(request.args.get("resolution"))
+    if h > max_res:
+        w = round(w/(h/max_res))
+        h = max_res
 
     subprocess.call(
-        "ffmpeg -re -i \"videos\\" + video + "\" -vf scale=" + str(w) + ":" + str(h) + "-map 0:v -c:v libx264 -preset ultrafast -tune zerolatency -b:v 1500k -f rtp rtp://" + ip_address + ":" + str(
+        "ffmpeg -re -i \"videos\\" + video + "\" -vf scale=" + str(w) + ":" + str(h) + " -map 0:v -c:v libx264 -preset ultrafast -tune zerolatency -b:v 1500k -f rtp rtp://" + ip_address + ":" + str(
             video_port) + " -map 0:a -c:a libopus -b:a 128k -f rtp rtp://" + ip_address + ":" + str(audio_port) + "",
         shell=True)
 

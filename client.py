@@ -64,10 +64,14 @@ def video_chose_menu(port):
     print("-----------------------------------")
     try:
         resolution = input("> ")
-        if resolution == "":
+        if resolution == "" or resolution == "0":
             resolution = 1080
+            print("Defaulting to 1080p")
         else:
             resolution = int(resolution)
+            if resolution % 2 == 0:
+                resolution = resolution+1
+                print("Resoloution must be even, defaulting to " + resolution)
     except:
         Utils.print_err("Your input is not an integer. Defaulting to 1080")
         resolution = 1080
