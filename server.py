@@ -52,7 +52,7 @@ def play_video():
         h = 1080
 
     subprocess.call(
-        "ffmpeg -re -i \"videos\\" + video + "\" -map 0:v -c:v libx264 -s " + str(w) + "x" + str(h) + "-preset ultrafast -tune zerolatency -b:v 1500k -f rtp rtp://" + ip_address + ":" + str(
+        "ffmpeg -re -i \"videos\\" + video + "\" -vf scale=" + str(w) + ":" + str(h) + "-map 0:v -c:v libx264 -preset ultrafast -tune zerolatency -b:v 1500k -f rtp rtp://" + ip_address + ":" + str(
             video_port) + " -map 0:a -c:a libopus -b:a 128k -f rtp rtp://" + ip_address + ":" + str(audio_port) + "",
         shell=True)
 
