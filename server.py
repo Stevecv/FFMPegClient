@@ -1,6 +1,7 @@
 import os
 import socket
 import subprocess
+from moviepy.editor import *
 
 from flask import Flask, request
 from waitress import serve
@@ -39,8 +40,19 @@ def play_video():
     print_out("Playing video for " + request.remote_addr)
     video = request.args.get("video-name")
     ip_address = request.args.get("ip-address")
+
+    # Scaling
+    vid = VideoFileClip("videos\\" + video)
+
+    w = vid.w
+    h = vid.h
+
+    if h > 1080:
+        w = round(w/(h/1080))
+        h = 1080
+
     subprocess.call(
-        "ffmpeg -re -i \"videos\\" + video + "\" -map 0:v -c:v libx264 -preset ultrafast -tune zerolatency -b:v 1500k -f rtp rtp://" + ip_address + ":" + str(
+        "ffmpeg -re -i \"videos\\" + video + "\" -map 0:v -c:v libx264 -s " + str(w) + "x" + str(h) + "-preset ultrafast -tune zerolatency -b:v 1500k -f rtp rtp://" + ip_address + ":" + str(
             video_port) + " -map 0:a -c:a libopus -b:a 128k -f rtp rtp://" + ip_address + ":" + str(audio_port) + "",
         shell=True)
 
