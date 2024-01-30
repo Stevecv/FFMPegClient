@@ -52,11 +52,14 @@ def play_video():
         w = round(w/(h/max_res))
         h = max_res
 
+    key = "zzzzzzzzzzzzzzzz"
+    salt = "0000000000000000"
     subprocess.call(
         "ffmpeg -re -i \"videos\\" + video + "\" -vf scale=" + str(w) + ":" + str(h) +
-        " -map 0:v -c:v libx264 -preset ultrafast -tune zerolatency -b:v 1500k -f rtp -srtp_out_suite AES_CM_128_HMAC_SHA1_80 -srtp_out_params zzzzzzzzzzzzzzzz:0000000000000000 " +
-        "srtp://" + ip_address + ":" + str(video_port) + " -map 0:a -c:a libopus -b:a 128k -f rtp -srtp_out_suite AES_CM_128_HMAC_SHA1_80 -srtp_out_params zzzzzzzzzzzzzzzz:0000000000000000 " +
-        "srtp://" + ip_address + ":" + str(audio_port) + "",
+        " -map 0:v -c:v libx264 -preset ultrafast -tune zerolatency -b:v 1500k -f rtp -srtp_out_suite AES_CM_128_HMAC_SHA1_80 -srtp_out_params " +
+        key + ":" + salt + " srtp://" + ip_address + ":" + str(video_port) +
+        " -map 0:a -c:a libopus -b:a 128k -f rtp -srtp_out_suite AES_CM_128_HMAC_SHA1_80 -srtp_out_params " +
+        key + ":" + salt + " srtp://" + ip_address + ":" + str(audio_port),
         shell=True
     )
 
