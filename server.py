@@ -53,9 +53,12 @@ def play_video():
         h = max_res
 
     subprocess.call(
-        "ffmpeg -re -i \"videos\\" + video + "\" -vf scale=" + str(w) + ":" + str(h) + " -map 0:v -c:v libx264 -preset ultrafast -tune zerolatency -b:v 1500k -f rtp rtp://" + ip_address + ":" + str(
-            video_port) + " -map 0:a -c:a libopus -b:a 128k -f rtp rtp://" + ip_address + ":" + str(audio_port) + "",
-        shell=True)
+        "ffmpeg -re -i \"videos\\" + video + "\" -vf scale=" + str(w) + ":" + str(h) +
+        " -map 0:v -c:v libx264 -preset ultrafast -tune zerolatency -b:v 1500k -f rtp -srtp_out_suite AES_CM_128_HMAC_SHA1_80 -srtp_out_params zzzzzzzzzzzzzzzz:0000000000000000 " +
+        "rtps://" + ip_address + ":" + str(video_port) + " -map 0:a -c:a libopus -b:a 128k -f rtp -srtp_out_suite AES_CM_128_HMAC_SHA1_80 -srtp_out_params zzzzzzzzzzzzzzzz:0000000000000000 " +
+        "rtps://" + ip_address + ":" + str(audio_port) + "",
+        shell=True
+    )
 
     return "Playing video..."
 
