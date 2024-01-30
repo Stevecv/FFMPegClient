@@ -1,3 +1,4 @@
+import base64
 import os
 import socket
 import subprocess
@@ -52,14 +53,15 @@ def play_video():
         w = round(w/(h/max_res))
         h = max_res
 
-    key = "zzzzzzzzzzzzzzzz"
-    salt = "0000000000000000"
+    master_key_base64 = "zFdeCYgaRA26pe8dEfhjSQ=="  # Replace with your actual master key
+    master_salt_base64 = "dNf0fXBAOfiEBhYrb8k="  # Replace with your actual master salt
+
     subprocess.call(
-        "ffmpeg -re -i \"videos\\" + video + "\" -vf scale=" + str(w) + ":" + str(h) +
-        " -map 0:v -c:v libx264 -preset ultrafast -tune zerolatency -b:v 1500k -f rtp -srtp_out_suite AES_CM_128_HMAC_SHA1_80 -srtp_out_params " +
-        key + ":" + salt + " srtp://" + ip_address + ":" + str(video_port) +
-        " -map 0:a -c:a libopus -b:a 128k -f rtp -srtp_out_suite AES_CM_128_HMAC_SHA1_80 -srtp_out_params " +
-        key + ":" + salt + " srtp://" + ip_address + ":" + str(audio_port),
+        f"ffmpeg -re -i videos/{video} -vf scale={w}:{h} -map 0:v -c:v libx264 -preset ultrafast -tune zerolatency -b:v 1500k -f rtp"
+        f" -srtp_in_suite SRTP_AES128_CM_HMAC_SHA1_80 -srtp_out_suite SRTP_AES128_CM_HMAC_SHA1_80"
+        f" -srtp_in_params {base64.b64decode(master_key_base64).hex()}:{base64.b64decode(master_salt_base64).hex()}"
+        f" -srtp_out_params {base64.b64decode(master_key_base64).hex()}:{base64.b64decode(master_salt_base64).hex()}"
+        f" rtp://{ip_address}:{video_port} -map 0:a -c:a libopus -b:a 128k -f rtp rtp://{ip_address}:{audio_port}",
         shell=True
     )
 
