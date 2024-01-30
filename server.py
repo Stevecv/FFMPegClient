@@ -48,7 +48,7 @@ def play_video():
     h = vid.h
 
     if h > 1080:
-        w = round(w/(h/1080))
+        w = round(w/(h/request.args.get("resolution")))
         h = 1080
 
     subprocess.call(
