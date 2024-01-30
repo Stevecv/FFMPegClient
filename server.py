@@ -57,11 +57,13 @@ def get_sdp():
 
     print_out("Sending sdp to " + request.remote_addr)
 
-    sdp_file = "server-temp\\" + str(uuid.uuid4())
-    subprocess.call(
-        "ffmpeg -re -i \"videos\\" + video + "\" -map 0:v -c:v libx264 -preset ultrafast -tune zerolatency -b:v 1500k -f rtp rtp://" + ip_address + ":" + str(
-            video_port) + " -map 0:a -c:a libopus -b:a 128k -f rtp rtp://" + ip_address + ":" + str(
-            audio_port) + " -sdp_file " + sdp_file + ".sdp 2> " + sdp_file + ".txt", shell=True)
+    sdp_file = "server-temp\\" + video
+    if not os.path.exists(sdp_file + ".sdp"):
+        print("Generating sdp...")
+        subprocess.call(
+            "ffmpeg -re -i \"videos\\" + video + "\" -map 0:v -c:v libx264 -preset ultrafast -tune zerolatency -b:v 1500k -f rtp rtp://" + ip_address + ":" + str(
+                video_port) + " -map 0:a -c:a libopus -b:a 128k -f rtp rtp://" + ip_address + ":" + str(
+                audio_port) + " -sdp_file " + sdp_file + ".sdp 2> " + sdp_file + ".txt", shell=True)
 
     f = open(sdp_file + ".sdp", "r")
     return f.read()
@@ -76,4 +78,5 @@ def setup_server(port):
     print("Using video port: " + str(video_port))
     print("Using audio port: " + str(audio_port))
 
+    print(port)
     serve(app, host='0.0.0.0', port=port, threads=1)
