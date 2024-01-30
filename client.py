@@ -23,7 +23,7 @@ def get_ip_address():
 def play_video(sdp_loc, port, video, resolution):
     print("Playing video")
     subprocess.Popen(
-        "ffplay -protocol_whitelist file,rtps,udp -srtp_in_suite AES_CM_128_HMAC_SHA1_80 -srtp_in_params " +
+        "ffplay -protocol_whitelist file,rtp,srtp,udp -srtp_in_suite AES_CM_128_HMAC_SHA1_80 -srtp_in_params " +
         "zzzzzzzzzzzzzzzz:0000000000000000" + " " + sdp_loc,
         shell=True
     )
